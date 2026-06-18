@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { AdaptiveDpr } from "@react-three/drei";
-import { ServicesScene } from "./ServicesScene";
+import React, { Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { AdaptiveDpr } from '@react-three/drei';
+import { ServicesScene } from './ServicesScene';
+import { LazyCanvasWrapper } from '@/components/performance/LazyCanvasWrapper';
 
 export function ServicesCanvas() {
   // Use a media query hook or standard CSS to handle prefers-reduced-motion
@@ -12,19 +13,21 @@ export function ServicesCanvas() {
   // We'll rely on the parent CSS and default R3F frameloop for now, ensuring AdaptiveDpr helps with performance.
 
   return (
-    <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
-      <Canvas
-        camera={{ position: [0, 2, 12], fov: 45 }}
-        className="pointer-events-auto"
-        dpr={[1, 2]} // Standard DPR clamp for performance
-        gl={{ antialias: true, alpha: true }}
-      >
-        <Suspense fallback={null}>
-          <ServicesScene />
-          {/* Performance optimization: Drops resolution on fast movements */}
-          <AdaptiveDpr pixelated />
-        </Suspense>
-      </Canvas>
+    <div className="pointer-events-none absolute inset-0 z-0 h-full w-full">
+      <LazyCanvasWrapper>
+        <Canvas
+          camera={{ position: [0, 2, 12], fov: 45 }}
+          className="pointer-events-auto"
+          dpr={[1, 2]} // Standard DPR clamp for performance
+          gl={{ antialias: true, alpha: true }}
+        >
+          <Suspense fallback={null}>
+            <ServicesScene />
+            {/* Performance optimization: Drops resolution on fast movements */}
+            <AdaptiveDpr pixelated />
+          </Suspense>
+        </Canvas>
+      </LazyCanvasWrapper>
     </div>
   );
 }
