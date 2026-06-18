@@ -11,6 +11,7 @@ import {
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { ProcessScene } from './ProcessScene';
 import { LazyCanvasWrapper } from '@/components/performance/LazyCanvasWrapper';
+import { SceneOptimizer } from '@/components/performance/SceneOptimizer';
 
 export function ProcessCanvas() {
   const [mounted, setMounted] = useState(false);
@@ -36,6 +37,7 @@ export function ProcessCanvas() {
           style={{ pointerEvents: 'auto' }} // Allow mouse events for hover and parallax
         >
           <Suspense fallback={null}>
+            <SceneOptimizer />
             <ProcessScene />
 
             {/* Post Processing: Subtle Bloom */}

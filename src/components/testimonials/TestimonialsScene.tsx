@@ -19,6 +19,7 @@ import { TestimonialsLighting } from './TestimonialsLighting';
 import { TestimonialCard3D } from './TestimonialCard3D';
 import { TESTIMONIALS_3D } from './TestimonialsData';
 import { LazyCanvasWrapper } from '@/components/performance/LazyCanvasWrapper';
+import { SceneOptimizer } from '@/components/performance/SceneOptimizer';
 
 function SceneParallax({ children }: { children: React.ReactNode }) {
   const groupRef = useRef<THREE.Group>(null);
@@ -54,6 +55,7 @@ export function TestimonialsScene() {
           <fog attach="fog" args={['#050505', 300, 800]} />
 
           <Suspense fallback={null}>
+            <SceneOptimizer />
             <SceneParallax>
               <TestimonialsLighting />
               <MemoryCore />

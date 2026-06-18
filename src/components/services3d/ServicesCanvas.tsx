@@ -1,27 +1,37 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { AdaptiveDpr } from '@react-three/drei';
 import { ServicesScene } from './ServicesScene';
 import { LazyCanvasWrapper } from '@/components/performance/LazyCanvasWrapper';
+import { SceneOptimizer } from '@/components/performance/SceneOptimizer';
 
 export function ServicesCanvas() {
-  // Use a media query hook or standard CSS to handle prefers-reduced-motion
-  // For R3F, we can freeze by setting Frameloop to demand, but since we have continuous orbits,
-  // we either pause the delta or just let OS handle standard motion reduction if needed.
-  // We'll rely on the parent CSS and default R3F frameloop for now, ensuring AdaptiveDpr helps with performance.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="pointer-events-none absolute inset-0 z-0 h-full w-full">
       <LazyCanvasWrapper>
         <Canvas
-          camera={{ position: [0, 2, 12], fov: 45 }}
-          className="pointer-events-auto"
-          dpr={[1, 2]} // Standard DPR clamp for performance
-          gl={{ antialias: true, alpha: true }}
+          camera={{ position: [0, 0, 400], fov: 45 }}
+          dpr={[1, 2]}
+          gl={{
+            antialias: true,
+            powerPreference: 'high-performance',
+            alpha: true,
+          }}
+          style={{ pointerEvents: 'auto' }} // Enable pointer events on the canvas
         >
           <Suspense fallback={null}>
+            <SceneOptimizer />
             <ServicesScene />
             {/* Performance optimization: Drops resolution on fast movements */}
             <AdaptiveDpr pixelated />

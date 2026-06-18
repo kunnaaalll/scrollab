@@ -1,7 +1,9 @@
 'use client';
 
-import { useRef, ReactNode } from 'react';
+import { useRef, ReactNode, createContext } from 'react';
 import { useInView, UseInViewOptions } from 'framer-motion';
+
+export const CanvasViewContext = createContext(true);
 
 interface LazyCanvasWrapperProps {
   children: ReactNode;
@@ -13,22 +15,32 @@ interface LazyCanvasWrapperProps {
   className?: string;
 }
 
-/**
- * Wraps a <Canvas> element to only mount it when it's near the viewport.
- * This saves massive amounts of GPU memory by completely destroying the
- * WebGL context and framebuffers when the section is scrolled far out of view.
- */
 export function LazyCanvasWrapper({
   children,
   margin = '600px',
-  className = 'absolute inset-0 w-full h-full',
+  className = 'absolute inset-0 w-full h-full pointer-events-none z-0',
 }: LazyCanvasWrapperProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { margin });
 
   return (
     <div ref={ref} className={className}>
-      {isInView && children}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: isInView ? '100%' : '1px',
+          height: isInView ? '100%' : '1px',
+          opacity: isInView ? 1 : 0,
+          pointerEvents: isInView ? 'auto' : 'none',
+          overflow: 'hidden',
+        }}
+      >
+        <CanvasViewContext.Provider value={isInView}>
+          {children}
+        </CanvasViewContext.Provider>
+      </div>
     </div>
   );
 }

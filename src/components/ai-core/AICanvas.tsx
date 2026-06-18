@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { AdaptiveDpr, AdaptiveEvents } from '@react-three/drei';
 import { AIScene } from './AIScene';
 import { LazyCanvasWrapper } from '@/components/performance/LazyCanvasWrapper';
+import { SceneOptimizer } from '@/components/performance/SceneOptimizer';
 
 export function AICanvas() {
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -32,6 +33,7 @@ export function AICanvas() {
           }}
         >
           <Suspense fallback={null}>
+            <SceneOptimizer />
             <AIScene reduceMotion={reduceMotion} />
             <AdaptiveDpr pixelated />
             <AdaptiveEvents />
